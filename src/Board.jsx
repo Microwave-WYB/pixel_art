@@ -61,7 +61,6 @@ const Board = (props) => {
   }
 
   const handleMouseMove = (e) => {
-    console.log(mouseDown);
     switch (mouseDown) {
       case 0:
         fillPixel(currColor, cursorPos, currLayer);
