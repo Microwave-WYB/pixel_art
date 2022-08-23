@@ -14,7 +14,7 @@ const Board = (props) => {
   const [cursorVisible, setCursorVisible] = useState(false);
   const [currColor, setCurrColor] = useState([0, 0, 0]);
   const [currLayer, setCurrLayer] = useState("layer0");
-  const [mouseDown, setMouseDown] = useState(false);
+  const [mouseDown, setMouseDown] = useState(-1);
 
   const getMousePos = (e) => {
     let rect = e.target.getBoundingClientRect();
@@ -37,14 +37,39 @@ const Board = (props) => {
     ctx.fillRect(x, y, pixelSize, pixelSize);
   }
 
-  const handleMouseMove = (e) => {
-    if (mouseDown) {
+  const clearPixel = (pos, layerId) => {
+    let c = document.getElementById(layerId);
+    let ctx = c.getContext("2d");
+    let x = pos[0] * pixelSize;
+    let y = pos[1] * pixelSize;
+    ctx.clearRect(x, y, pixelSize, pixelSize);
+  }
+
+  const handleMouseDown = (e) => {
+    setMouseDown(e.nativeEvent.button);
+    if (e.nativeEvent.button == 0) {
       fillPixel(currColor, cursorPos, currLayer);
+    } else {
+      e.preventDefault();
+    }
+  }
+
+  const handleMouseMove = (e) => {
+    console.log(mouseDown);
+    switch (mouseDown) {
+      case 0:
+        fillPixel(currColor, cursorPos, currLayer);
+        break;
+      case 2:
+        clearPixel(cursorPos, currLayer);
+        break;
+      default:
+        break;
     }
   }
 
   const handleMouseLeave = (e) => {
-    setMouseDown(false);
+    setMouseDown(-1);
     setCursorVisible(false);
   }
 
@@ -59,9 +84,10 @@ const Board = (props) => {
       style={{ width: actualWidth, height: actualHeight, zIndex: 0 }}
       onMouseLeave={(e) => handleMouseLeave(e)}
       onMouseEnter={(e) => handleMouseEnter(e)}
-      onMouseDown={(e) => {setMouseDown(true); fillPixel(currColor, cursorPos, currLayer)} }
-      onMouseUp={(e) => setMouseDown(false)}
+      onMouseDown={(e) => handleMouseDown(e)}
+      onMouseUp={(e) => setMouseDown(-1)}
       onMouseMove={(e) => handleMouseMove(e)}
+      onContextMenu={(e) => handleMouseDown(e)}
     >
       <canvas
         id="cursor-layer"
