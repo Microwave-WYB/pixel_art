@@ -1,0 +1,13 @@
+#toolbox {
+    position: absolute;
+    left: 100px;
+    top: 50px;
+    background-color: #ffe3c8;
+    width: fit-content;
+    height: fit-content;
+}
+
+.tool {
+    width: 60px;
+    height: 60px;
+}
