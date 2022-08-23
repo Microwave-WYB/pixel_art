@@ -3,7 +3,7 @@ import "./styles/Board.css"
 import Cursor from "./Cursor";
 import { useState, useEffect} from "react";
 
-const pixelSize = 30;
+export const pixelSize = 30;
 
 const Board = (props) => {
   let interval;

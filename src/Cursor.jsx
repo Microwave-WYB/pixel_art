@@ -1,6 +1,5 @@
 import React from "react";
-
-const pixelSize = 30;
+import { pixelSize } from "./Board";
 
 const Cursor = (props) => {
   const style = {

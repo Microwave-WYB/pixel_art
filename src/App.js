@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 
 import './styles/App.css';
 
-const pixelSize = 30;
-
 function App() {
   return (
     <div className="App">
