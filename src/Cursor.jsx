@@ -11,7 +11,7 @@ const Cursor = (props) => {
     top: props.row * pixelSize,
     position: "absolute",
     boxSizing: "border-box",
-    border: "4px dashed rgba(0, 255, 255, 0.5)",
+    border: props.visible ? "4px dashed rgba(0, 255, 255, 0.8)" : "none",
     mixBlendMode: "difference",
   };
   return (
