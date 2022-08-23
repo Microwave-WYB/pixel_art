@@ -47,10 +47,16 @@ const Board = (props) => {
 
   const handleMouseDown = (e) => {
     setMouseDown(e.nativeEvent.button);
-    if (e.nativeEvent.button == 0) {
-      fillPixel(currColor, cursorPos, currLayer);
-    } else {
-      e.preventDefault();
+    switch (e.nativeEvent.button) {
+      case 0:
+        fillPixel(currColor, cursorPos, currLayer);
+        break;
+      case 2:
+        e.preventDefault();
+        clearPixel(cursorPos, currLayer);
+        break;
+      default:
+        break;
     }
   }
 
