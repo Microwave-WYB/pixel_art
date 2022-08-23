@@ -3,23 +3,23 @@ import "./styles/Board.css"
 import Cursor from "./Cursor";
 import { useState, useEffect} from "react";
 
-export const pixelSize = 30;
-
 const Board = (props) => {
-  let interval;
-  const actualWidth = props.width * pixelSize;
-  const actualHeight = props.height * pixelSize;
+  // props.width;
+  // props.height;
+  // props.tool;
+  // props.color;
+  const actualWidth = props.width * props.pixelSize;
+  const actualHeight = props.height * props.pixelSize;
 
   const [cursorPos, setCursorPos] = useState([0, 0]);
   const [cursorVisible, setCursorVisible] = useState(false);
-  const [currColor, setCurrColor] = useState([0, 0, 0]);
   const [currLayer, setCurrLayer] = useState("layer0");
   const [mouseDown, setMouseDown] = useState(-1);
 
   const getMousePos = (e) => {
     let rect = e.target.getBoundingClientRect();
-    let col = parseInt((e.clientX - rect.left) / pixelSize);
-    let row = parseInt((e.clientY - rect.top) / pixelSize);
+    let col = parseInt((e.clientX - rect.left) / props.pixelSize);
+    let row = parseInt((e.clientY - rect.top) / props.pixelSize);
     return [col, row];
   }
 
@@ -31,39 +31,45 @@ const Board = (props) => {
   const fillPixel = (color, pos, layerId) => {
     let c = document.getElementById(layerId);
     let ctx = c.getContext("2d");
-    let x = pos[0] * pixelSize;
-    let y = pos[1] * pixelSize;
+    let x = pos[0] * props.pixelSize;
+    let y = pos[1] * props.pixelSize;
     ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-    ctx.fillRect(x, y, pixelSize, pixelSize);
+    ctx.fillRect(x, y, props.pixelSize, props.pixelSize);
   }
 
   const clearPixel = (pos, layerId) => {
     let c = document.getElementById(layerId);
     let ctx = c.getContext("2d");
-    let x = pos[0] * pixelSize;
-    let y = pos[1] * pixelSize;
-    ctx.clearRect(x, y, pixelSize, pixelSize);
+    let x = pos[0] * props.pixelSize;
+    let y = pos[1] * props.pixelSize;
+    ctx.clearRect(x, y, props.pixelSize, props.pixelSize);
   }
 
-  const handleMouseDown = (e) => {
-    setMouseDown(e.nativeEvent.button);
-    switch (e.nativeEvent.button) {
-      case 0:
-        fillPixel(currColor, cursorPos, currLayer);
-        break;
-      case 2:
-        e.preventDefault();
-        clearPixel(cursorPos, currLayer);
+  const handelMouseDown = (e) => {
+    switch (props.tool) {
+      case "pencil":
+        setMouseDown(e.nativeEvent.button);
+        switch (e.nativeEvent.button) {
+          case 0:
+            fillPixel(props.color, cursorPos, currLayer);
+            break;
+          case 2:
+            e.preventDefault();
+            clearPixel(cursorPos, currLayer);
+            break;
+          default:
+            break;
+        }
         break;
       default:
         break;
     }
   }
 
-  const handleMouseMove = (e) => {
+  const handelMouseMove = (e) => {
     switch (mouseDown) {
       case 0:
-        fillPixel(currColor, cursorPos, currLayer);
+        fillPixel(props.color, cursorPos, currLayer);
         break;
       case 2:
         clearPixel(cursorPos, currLayer);
@@ -73,12 +79,12 @@ const Board = (props) => {
     }
   }
 
-  const handleMouseLeave = (e) => {
+  const handelMouseLeave = (e) => {
     setMouseDown(-1);
     setCursorVisible(false);
   }
 
-  const handleMouseEnter = (e) => {
+  const handelMouseEnter = (e) => {
     setCursorVisible(true);
   }
 
@@ -87,12 +93,12 @@ const Board = (props) => {
     <div
       className="board"
       style={{ width: actualWidth, height: actualHeight, zIndex: 0 }}
-      onMouseLeave={(e) => handleMouseLeave(e)}
-      onMouseEnter={(e) => handleMouseEnter(e)}
-      onMouseDown={(e) => handleMouseDown(e)}
+      onMouseLeave={(e) => handelMouseLeave(e)}
+      onMouseEnter={(e) => handelMouseEnter(e)}
+      onMouseDown={(e) => handelMouseDown(e)}
       onMouseUp={(e) => setMouseDown(-1)}
-      onMouseMove={(e) => handleMouseMove(e)}
-      onContextMenu={(e) => handleMouseDown(e)}
+      onMouseMove={(e) => handelMouseMove(e)}
+      onContextMenu={(e) => handelMouseDown(e)}
     >
       <canvas
         id="cursor-layer"
@@ -105,6 +111,8 @@ const Board = (props) => {
         col={cursorPos[0]}
         row={cursorPos[1]}
         visible={cursorVisible}
+        color={props.color}
+        pixelSize={props.pixelSize}
       ></Cursor>
       <canvas
         id="layer0"
