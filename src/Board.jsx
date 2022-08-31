@@ -1,105 +1,50 @@
 import React from "react";
-import Pencil from "./tools/Pencil"
-import { clearPixel } from "./utils"
-import "./styles/Board.css"
-import Cursor from "./Cursor";
-import { useState, useEffect} from "react";
-import pencil from "./tools/Pencil";
+// import "./styles/Board.css"
+import Layer from "./Layer";
+// import { PIXEL_WIDTH } from "./App";
 
 const Board = (props) => {
-  // props.width;
-  // props.height;
-  // props.tool;
-  // props.color;
-  const actualWidth = props.width * props.pixelSize;
-  const actualHeight = props.height * props.pixelSize;
 
-  // Hooks
-  const [cursorPos, setCursorPos] = useState([0, 0]);
-  const [cursorVisible, setCursorVisible] = useState(false);
-  const [currLayer, setCurrLayer] = useState("background");
-  const [mouseDown, setMouseDown] = useState(-1);
+  const layers = [];
 
-  // Tools
-  const pencil = new Pencil(props.color, cursorPos, 1, props.pixelSize, currLayer);
+  const canvasRef = React.useRef(null);
 
-  const getMousePos = (e) => {
-    let rect = e.target.getBoundingClientRect();
-    let col = parseInt((e.clientX - rect.left) / props.pixelSize);
-    let row = parseInt((e.clientY - rect.top) / props.pixelSize);
-    return [col, row];
+  React.useEffect(() => {
+    const bgLayer = new Layer(props.numRow, props.numCol, "background");
+    bgLayer.fillLayer([255, 255, 255, 1]);
+    layers.push(bgLayer);
+    render();
+  }, []);
+
+  React.useEffect(() => {
+    render();
+  }, [layers]);
+
+  const render = () => {
+    let ctx = canvasRef.current.getContext("2d");
+    layers.forEach(layer => {
+      for (let row = 0; row < layer.numRow; row++) {
+        for (let col = 0; col < layer.numCol; col++) {
+          let [r, g, b, a] = layer.pixels[row][col];
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`;
+          ctx.fillRect(
+            col * props.pixelWidth,
+            row * props.pixelWidth,
+            props.pixelWidth,
+            props.pixelWidth
+          );
+        }
+      }
+    });
   }
-
-  const moveCursor = (e) => {
-    let [col, row] = getMousePos(e);
-    setCursorPos([col, row]);
-  }
-
-  const handelMouseDown = (e) => {
-    switch (props.tool) {
-      case "pencil":
-        setMouseDown(e.nativeEvent.button);
-        pencil.handleMouseDown(e);
-        break;
-      default:
-        break;
-    }
-  }
-
-  const handelMouseMove = (e) => {
-    switch (mouseDown) {
-      case 0:
-        // fillPixel(props.color, cursorPos, currLayer);
-        pencil.draw(currLayer);
-        break;
-      case 2:
-        clearPixel(cursorPos, currLayer, props.pixelSize);
-        break;
-      default:
-        break;
-    }
-  }
-
-  const handelMouseLeave = (e) => {
-    setMouseDown(-1);
-    setCursorVisible(false);
-  }
-
-  const handelMouseEnter = (e) => {
-    setCursorVisible(true);
-  }
-
 
   return (
-    <div
-      className="board"
-      style={{ width: actualWidth, height: actualHeight, zIndex: 0 }}
-      onMouseLeave={(e) => handelMouseLeave(e)}
-      onMouseEnter={(e) => handelMouseEnter(e)}
-      onMouseDown={(e) => handelMouseDown(e)}
-      onMouseUp={(e) => setMouseDown(-1)}
-      onMouseMove={(e) => handelMouseMove(e)}
-      onContextMenu={(e) => handelMouseDown(e)}
-    >
+    <div className="board">
       <canvas
-        id="cursor-layer"
-        className="layer"
-        width={actualWidth}
-        height={actualHeight}
-        onMouseMove={(e) => moveCursor(e)}
-      ></canvas>
-      <Cursor
-        col={cursorPos[0]}
-        row={cursorPos[1]}
-        visible={cursorVisible}
-        color={props.color}
-        pixelSize={props.pixelSize}
-      ></Cursor>
-      <canvas
-        id="background"
-        className="layer"
-        width={actualWidth}
-        height={actualHeight}
+        id="canvas"
+        width={props.numCol * props.pixelWidth}
+        height={props.numRow * props.pixelWidth}
+        ref={canvasRef}
       ></canvas>
     </div>
   );
