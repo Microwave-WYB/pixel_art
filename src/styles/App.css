@@ -3,6 +3,10 @@
   /* cursor: none; */
 }
 
+p {
+  color: white;
+}
+
 #toolbox {
   position: absolute;
   left: 100px;
