@@ -1,24 +1,30 @@
 import React from "react";
+import ColorContext from "./ColorContext";
 // import "./styles/Board.css"
 import Layer from "./Layer";
 // import { PIXEL_WIDTH } from "./App";
+import ToolContext from "./ToolContext"
+import LayerContext from "./LayerContext";
 
 const Board = (props) => {
 
   const layers = [];
-
   const canvasRef = React.useRef(null);
 
-  React.useEffect(() => {
-    const bgLayer = new Layer(props.numRow, props.numCol, "background");
-    bgLayer.fillLayer([255, 255, 255, 1]);
-    layers.push(bgLayer);
-    render();
-  }, []);
+  const {tool, setTool} = React.useContext(ToolContext);
+  const {color, setColor} = React.useContext(ColorContext);
+  const {layer, setLayer} = React.useContext(LayerContext);
 
   React.useEffect(() => {
-    render();
-  }, [layers]);
+    layers.push(layer);
+    const interval = setInterval(() => {
+      render();
+    }, 10);
+  }, []);
+
+  // React.useEffect(() => {
+  //   render();
+  // });
 
   const render = () => {
     let ctx = canvasRef.current.getContext("2d");
@@ -38,6 +44,29 @@ const Board = (props) => {
     });
   }
 
+  const pixelUnderCursor = (e) => {
+    let bounds = e.target.getBoundingClientRect();
+    let x = e.clientX - bounds.left;
+    let y = e.clientY - bounds.top;
+    let col = parseInt(x / props.pixelWidth);
+    let row = parseInt(y / props.pixelWidth);
+    return ([row, col]);
+  }
+
+  const onMouseDown = (e) => {
+    let [row, col] = pixelUnderCursor(e);
+    tool.onMouseDown(row, col);
+  }
+
+  const onMouseMove = (e) => {
+    let [row, col] = pixelUnderCursor(e);
+    tool.onMouseMove(row, col);
+  }
+
+  const onMouseUp = () => {
+    tool.onMouseUp();
+  }
+
   return (
     <div className="board">
       <canvas
@@ -45,6 +74,9 @@ const Board = (props) => {
         width={props.numCol * props.pixelWidth}
         height={props.numRow * props.pixelWidth}
         ref={canvasRef}
+        onMouseDown={(e) => {onMouseDown(e)}}
+        onMouseUp={onMouseUp}
+        onMouseMove={(e) => {onMouseMove(e)}}
       ></canvas>
     </div>
   );

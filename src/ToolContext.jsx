@@ -1,7 +1,8 @@
 import React from "react";
+import Pencil from "./tools/Pencil";
 
 const ToolContext = React.createContext({
-  tool: "pencil",
+  tool: new Pencil(),
   setTool: () => {}
 });
 
