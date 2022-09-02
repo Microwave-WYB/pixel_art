@@ -8,27 +8,20 @@ import LayerContext from "./LayerContext";
 
 const Board = (props) => {
 
-  const layers = [];
   const canvasRef = React.useRef(null);
 
-  const {tool, setTool} = React.useContext(ToolContext);
-  const {color, setColor} = React.useContext(ColorContext);
-  const {layer, setLayer} = React.useContext(LayerContext);
-
   React.useEffect(() => {
-    layers.push(layer);
     const interval = setInterval(() => {
       render();
     }, 10);
   }, []);
 
-  // React.useEffect(() => {
-  //   render();
-  // });
-
   const render = () => {
     let ctx = canvasRef.current.getContext("2d");
-    layers.forEach(layer => {
+    props.layers.arr.forEach(layer => {
+      if (!layer.visible) {
+        return;
+      }
       for (let row = 0; row < layer.numRow; row++) {
         for (let col = 0; col < layer.numCol; col++) {
           let [r, g, b, a] = layer.pixels[row][col];
@@ -55,16 +48,16 @@ const Board = (props) => {
 
   const onMouseDown = (e) => {
     let [row, col] = pixelUnderCursor(e);
-    tool.onMouseDown(row, col);
+    props.tool.onMouseDown(row, col, props.layers.arr[props.layers.curr]);
   }
 
   const onMouseMove = (e) => {
     let [row, col] = pixelUnderCursor(e);
-    tool.onMouseMove(row, col);
+    props.tool.onMouseMove(row, col, props.layers.arr[props.layers.curr]);
   }
 
   const onMouseUp = () => {
-    tool.onMouseUp();
+    props.tool.onMouseUp();
   }
 
   return (
