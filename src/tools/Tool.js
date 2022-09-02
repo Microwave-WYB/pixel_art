@@ -1,7 +1,5 @@
 export default class Tool {
-  constructor(layer) {
-    this.layer = layer;
-  }
+  constructor() {}
 
   onMouseDown(row, col) {}
   onMouseUp() {}

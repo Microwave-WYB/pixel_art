@@ -1,24 +1,24 @@
 import Tool from "./Tool";
 export default class Pencil extends Tool {
-  constructor(layer, width, color) {
-    super(layer);
+  constructor(width, color) {
+    super();
     this.width = width;
     this.color = color;
   }
 
-  onMouseDown(row, col) {
+  onMouseDown(row, col, layer) {
     this.mouseDown = true;
     // TODO: use width
-    this.layer.fillPixel(row, col, this.color);
+    layer.fillPixel(row, col, this.color);
   }
 
   onMouseUp() {
     this.mouseDown = false;
   }
 
-  onMouseMove(row, col) {
+  onMouseMove(row, col, layer) {
     if (this.mouseDown) {
-      this.layer.fillPixel(row, col, this.color) 
+      layer.fillPixel(row, col, this.color) 
     } else {
       // TODO: use buffer
     }
