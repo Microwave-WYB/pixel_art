@@ -28,4 +28,8 @@ export default class Layer {
       this.pixels[row][col] = color;
     });
   }
+
+  toggleVisible() {
+    this.visible = !this.visible;
+  }
 }
