@@ -52,6 +52,10 @@ const LayerSwitcher = (props) => {
    * Delete the current layer and update switcher
    */
   const deleteLayer = () => {
+    if (props.layers.arr.length === 1) {
+      alert("Cannot delete the last layer");
+      return;
+    }
     props.layers.arr.splice(props.layers.curr, 1);
     props.layers.curr = props.layers.curr - 1;
     updateLayerButtons();
