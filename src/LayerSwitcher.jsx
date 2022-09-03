@@ -21,6 +21,7 @@ const LayerSwitcher = (props) => {
             onClick(e, i)
           }}
           onClick={(e) => onClick(e, i)}
+          style={{backgroundColor: props.layers.curr === i ? "#ffcc85" : ""}}
         >
           {props.layers.arr[i].id}
         </button>,
@@ -38,7 +39,7 @@ const LayerSwitcher = (props) => {
 
   const deleteLayer = () => {
     props.layers.arr.splice(props.layers.curr, 1);
-    props.layers.curr = props.layers.arr.length;
+    props.layers.curr = props.layers.curr - 1;
     updateLayerButtons();
   }
 
@@ -48,6 +49,7 @@ const LayerSwitcher = (props) => {
         // switch layer with left click
         switchLayer(index);
         console.log("left");
+        updateLayerButtons();
         break;
       case 2:
         // toggle visibility with right click
