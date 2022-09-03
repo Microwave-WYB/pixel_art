@@ -14,7 +14,16 @@ const LayerSwitcher = (props) => {
     for (let i = 0; i < props.layers.arr.length; i++) {
       setLayerButtons((layerButtons) => [
         layerButtons,
-        <button key={i} onClick={() => onClick(i)}>{props.layers.arr[i].id}</button>,
+        <button
+          key={i}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            onClick(e, i)
+          }}
+          onClick={(e) => onClick(e, i)}
+        >
+          {props.layers.arr[i].id}
+        </button>,
       ]);
     }
   }
@@ -27,11 +36,26 @@ const LayerSwitcher = (props) => {
     updateLayerButtons();
   }
 
-  const onClick = (index) => {
-    if (props.layers.curr != index) {
-      switchLayer(index);
-    } else {
-      props.layers.arr[props.layers.curr].toggleVisible();
+  const deleteLayer = () => {
+    props.layers.arr.splice(props.layers.curr, 1);
+    props.layers.curr = props.layers.arr.length;
+    updateLayerButtons();
+  }
+
+  const onClick = (e, index) => {
+    switch (e.nativeEvent.button) {
+      case 0:
+        // switch layer with left click
+        switchLayer(index);
+        console.log("left");
+        break;
+      case 2:
+        // toggle visibility with right click
+        props.layers.arr[index].toggleVisible();
+        console.log("right");
+        break;
+      default:
+        break;
     }
   }
 
@@ -43,6 +67,7 @@ const LayerSwitcher = (props) => {
   return (
     <div id="layerSwitcher">
       <button onClick={newLayer}>Create Layer</button>
+      <button onClick={deleteLayer}>Delete Layer</button>
       {layerButtons}
     </div>
   );
