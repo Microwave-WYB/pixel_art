@@ -29,7 +29,7 @@ function App() {
     // <LayerContext.Provider value={{layer, setLayer}}>
     // <ToolContext.Provider value={{tool, setTool}}>
     // <ColorContext.Provider value={{color, setColor}}>
-    <>
+    <div className="app">
       <p>Current tool: {tool.constructor.name}</p>
       <p>Current color: {`rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`}</p>
       <Board
@@ -42,7 +42,7 @@ function App() {
       ></Board>
       <Toolbox></Toolbox>
       <LayerSwitcher layers={layers}></LayerSwitcher>
-    </>
+    </div>
     // </ColorContext.Provider>
     // </ToolContext.Provider>
     // </LayerContext.Provider>
