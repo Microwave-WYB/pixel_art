@@ -1,3 +1,7 @@
+/**
+ * A simple tool to draw squares of a given width on the canvas.
+ */
+
 import Tool from "./Tool";
 export default class Pencil extends Tool {
   constructor(width, color) {

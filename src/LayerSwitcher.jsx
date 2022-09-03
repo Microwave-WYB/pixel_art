@@ -1,3 +1,8 @@
+/**
+ * Component that displays all layers and implements functions to manipulate
+ * layers
+ */
+
 import Layer from "./Layer";
 import React from "react";
 
@@ -9,6 +14,9 @@ const LayerSwitcher = (props) => {
     updateLayerButtons();
   }, [])
 
+  // Updates buttons according to current layers
+  // TODO: implement as a card that contains buttons for layer creation, deletion,
+  // and toggle visibility and lock status
   const updateLayerButtons = () => {
     setLayerButtons([]);
     for (let i = 0; i < props.layers.arr.length; i++) {
@@ -29,6 +37,9 @@ const LayerSwitcher = (props) => {
     }
   }
 
+  /**
+   * Create a new layer and update switcher
+   */
   const newLayer = () => {
     let newLayer = new Layer(16, 16, `Layer ${props.layers.arr.length}`, true);
     newLayer.fillLayer([255, 255, 0, 0.5]);
@@ -37,12 +48,16 @@ const LayerSwitcher = (props) => {
     updateLayerButtons();
   }
 
+  /**
+   * Delete the current layer and update switcher
+   */
   const deleteLayer = () => {
     props.layers.arr.splice(props.layers.curr, 1);
     props.layers.curr = props.layers.curr - 1;
     updateLayerButtons();
   }
 
+  // TODO: implement this function in each layer card
   const onClick = (e, index) => {
     switch (e.nativeEvent.button) {
       case 0:
@@ -61,6 +76,7 @@ const LayerSwitcher = (props) => {
     }
   }
 
+  // Change active layer
   const switchLayer = (index) => {
     props.layers.curr = index;
     console.log(props.layers);

@@ -1,3 +1,7 @@
+/**
+ * Parent class for all tools.
+ */
+
 export default class Tool {
   constructor() {}
 

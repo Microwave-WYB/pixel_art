@@ -1,3 +1,7 @@
+/**
+ * A board components that renders the canvas when pixels change
+ */
+
 import React from "react";
 import ColorContext from "./ColorContext";
 // import "./styles/Board.css"
@@ -10,15 +14,18 @@ const Board = (props) => {
 
   const canvasRef = React.useRef(null);
 
+  // Updates the canvas every 10ms
   React.useEffect(() => {
     const interval = setInterval(() => {
       render();
     }, 10);
   }, []);
 
+  // Update the canvas by iterating through layers from bottom to top.
   const render = () => {
     let ctx = canvasRef.current.getContext("2d");
     props.layers.arr.forEach(layer => {
+      // Skip invisible layers
       if (!layer.visible) {
         return;
       }
@@ -37,6 +44,7 @@ const Board = (props) => {
     });
   }
 
+  // Return the pixel's position under a mouse event
   const pixelUnderCursor = (e) => {
     let bounds = e.target.getBoundingClientRect();
     let x = e.clientX - bounds.left;
